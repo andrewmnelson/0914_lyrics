@@ -32,30 +32,27 @@ lyricsRoute.get('/lyrics', function(req, resp) {
 
 lyricsRoute.put('/lyrics/:title', jsonParser, function(req, resp) {
   console.log('PUT /lyrics/:title');
-  Lyric.find({ title: req.params.title }, function(err, data) {
-    if (err) {
-      console.log(err);
-      return resp.status(500).json({msg: 'internal server error'});
-    }
-    var newLyric = new Lyric(req.body);
-    if (!newLyric.title || (newLyric.title === req.params.title)) {
-      console.log('updating ' + req.params.title);
-      console.log('  was:' + data.toString());
-      console.log('  will be:' + newLyric.toString());
-      Lyric.update({ _id: data._id },
-        { author: newLyric.author || data.author,
-          chorus: newLyric.chorus || data.chorus,
-          verse:  (newLyric.verse && newLyric.verse.length)? newLyric.verse : data.verse
-        },
-        function(err) {
+  var newLyric = new Lyric(req.body);
+  if (!newLyric.title || (newLyric.title === req.params.title)) {
+    Lyric.findOne(
+      { title: req.params.title },
+      function(err, data) {
         if (err) {
           console.log(err);
           return resp.status(500).json({msg: 'internal server error'});
         }
+        data.author = newLyric.author || data.author;
+        data.chorus = newLyric.chorus || data.chorus;
+        data.verse = (newLyric.verse && newLyric.verse.length)? newLyric.verse : data.verse;
+        data.save();
+        console.log('updating ' + req.params.title);
+        console.log('  was:' + data.toString());
+        console.log('  will be:' + newLyric.toString());
         resp.json({msg: 'success'});
-      });
-    }
-  });
+      }
+    );
+  }
+  else return resp.status(404).json({msg: 'title not found'});
 });
 
 lyricsRoute.post('/lyrics', jsonParser, function(req, resp) {
