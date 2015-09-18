@@ -20,7 +20,6 @@ lyricsRoute.get('/lyrics/:title', jsonParser, function(req, resp) {
 });
 
 lyricsRoute.get('/lyrics', function(req, resp) {
-  console.log('GET /lyrics');
   Lyric.find({}, function(err, data) {
     if (err) {
       console.log(err);
@@ -31,7 +30,6 @@ lyricsRoute.get('/lyrics', function(req, resp) {
 });
 
 lyricsRoute.put('/lyrics/:title', jsonParser, function(req, resp) {
-  console.log('PUT /lyrics/:title');
   var newLyric = new Lyric(req.body);
   if (!newLyric.title || (newLyric.title === req.params.title)) {
     Lyric.findOne(
@@ -45,9 +43,6 @@ lyricsRoute.put('/lyrics/:title', jsonParser, function(req, resp) {
         data.chorus = newLyric.chorus || data.chorus;
         data.verse = (newLyric.verse && newLyric.verse.length)? newLyric.verse : data.verse;
         data.save();
-        console.log('updating ' + req.params.title);
-        console.log('  was:' + data.toString());
-        console.log('  will be:' + newLyric.toString());
         resp.json({msg: 'success'});
       }
     );
@@ -56,7 +51,6 @@ lyricsRoute.put('/lyrics/:title', jsonParser, function(req, resp) {
 });
 
 lyricsRoute.post('/lyrics', jsonParser, function(req, resp) {
-  console.log('POST /lyrics');
   var newLyric = new Lyric(req.body);
   newLyric.save(function(err, data) {
     if (err) {
