@@ -1,0 +1,1 @@
+superagent localhost:3000/api/lyrics/Boo\ Hoo

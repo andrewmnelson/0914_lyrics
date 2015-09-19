@@ -1,0 +1,1 @@
+superagent localhost:3000/api/lyrics post { title: "'Boo Hoo'", chorus: "'Oh boo hoo, oh boo hoo hoo'", author: "'Cry Baby'" }

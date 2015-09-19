@@ -7,7 +7,7 @@ var lyricsRoute = module.exports = exports = express.Router();
 lyricsRoute.get('/lyrics/:title', jsonParser, function(req, resp) {
   Lyric.find(req.params, function(err, data) {
     if (err) {
-      console.log(err);
+      lyricsLog(err);
       return resp.status(500).json({msg: 'internal server error'});
     }
     if ((!data) || (0 === data.length)) {
@@ -22,7 +22,7 @@ lyricsRoute.get('/lyrics/:title', jsonParser, function(req, resp) {
 lyricsRoute.get('/lyrics', function(req, resp) {
   Lyric.find({}, function(err, data) {
     if (err) {
-      console.log(err);
+      lyricsLog(err);
       return resp.status(500).json({msg: 'internal server error'});
     }
     resp.json(data);
@@ -36,14 +36,21 @@ lyricsRoute.put('/lyrics/:title', jsonParser, function(req, resp) {
       { title: req.params.title },
       function(err, data) {
         if (err) {
-          console.log(err);
+          lyricsLog(err);
           return resp.status(500).json({msg: 'internal server error'});
         }
-        data.author = newLyric.author || data.author;
-        data.chorus = newLyric.chorus || data.chorus;
-        data.verse = (newLyric.verse && newLyric.verse.length)? newLyric.verse : data.verse;
-        data.save();
-        resp.json({msg: 'success'});
+        if (!data) return resp.status(404).json({msg: 'title not found'});
+        data.author = req.body.author? newLyric.author : data.author;
+        data.chorus = req.body.chorus? newLyric.chorus : data.chorus;
+        data.verse = (req.body.verse && req.body.verse.length)?
+                     newLyric.verse : data.verse;
+        var writeRes = data.save();
+        if (writeRes.writeError) {
+          lyricsLog(writeRes.writeError);
+          return resp.status(500).json({msg: 'database error'});
+        }
+        else
+          return resp.json({msg: 'success'});
       }
     );
   }
@@ -54,7 +61,7 @@ lyricsRoute.post('/lyrics', jsonParser, function(req, resp) {
   var newLyric = new Lyric(req.body);
   newLyric.save(function(err, data) {
     if (err) {
-      console.log(err);
+      lyricsLog(err);
       return resp.status(500).json({msg: 'internal server error'});
     }
     resp.status(201).json(data);

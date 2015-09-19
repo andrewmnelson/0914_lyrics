@@ -1,0 +1,1 @@
+superagent localhost:3000/api/lyrics/Boo\ Hoo put { title: "'Boo Hoo'", verse: ["'You made me cry, made me wanna die'", "'You all up in my head, I wisht you was dead'"] }
