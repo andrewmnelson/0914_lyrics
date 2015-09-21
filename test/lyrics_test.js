@@ -105,27 +105,5 @@ describe('the lyrics server', function() {
         done();
       });
     });
-    // it('should not be able to post over an existing lyric', function(done) {
-    //   chai.request(lyricsURL)
-    //   .post('/lyrics')
-    //   .send({
-    //     title: 'FriedHam',
-    //     verse: ['I do not like them on a train,\n' +
-    //               'I do not like them in the rain.'     ,
-    //             'I would not like them in a house,\n' +
-    //               'I would not like them with a mouse.' ,
-    //             'I would not like them with a fox,\n' +
-    //               'I would not like them in a box.'
-    //             ],
-    //     chorus: 'I do not like green eggs and Fried Ham\n' +
-    //               'I do not like them, Sam I Am!'
-    //   })
-    //   .end(function(err, ret) {
-    //     expect(err).to.eql(null);
-    //     expect(ret.status).to.eql(403);
-    //     expect(ret.body).to.eql({msg: '403 Forbidden', reason: 'Use PUT to update'})
-    //     done();
-    //   });
-    // })
   });
 });
